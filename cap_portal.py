@@ -18,7 +18,7 @@ users = {
     }
 }
 
-anime = {
+animes = {
     '1': {
         'body': 'Jujutsu Kaisen',
         'user_id': '1'
@@ -69,22 +69,24 @@ def delete_user(user_id):
 
 @app.get('/anime')
 def get_anime():
-  return { 'posts': list(anime.values()) }
+  return { 'posts': list(animes.values()) }
 
 @app.post('/anime')
 def create_anime():
   post_data = request.get_json()
   user_id = post_data['user_id']
   if user_id in users:
-    anime[uuid4()] = post_data
+    animes[uuid4()] = post_data
     return { 'message': "Anime Created" }, 201
-  return { 'message': "Invalid User"}, 401
+  return { 'message': "Invalid"}, 401
 
 @app.put('/anime/<anime_id>')
 def update_anime(anime_id):
   try:
-    anime = anime[anime_id]
+    print(anime_id)
+    anime = animes[anime_id]
     anime_data = request.get_json()
+    print(anime_data)
     if anime_data['user_id'] == anime['user_id']:
       anime['body'] = anime_data['body']
       return { 'message': 'Anime Updated' }, 202
@@ -95,7 +97,7 @@ def update_anime(anime_id):
 @app.delete('/anime/<anime_id>')
 def delete_anime(anime_id):
   try:
-    del anime[anime_id]
+    del animes[anime_id]
     return {"message": "Anime Deleted"}, 202
   except:
     return {'message':"Invalid Anime"}, 400
