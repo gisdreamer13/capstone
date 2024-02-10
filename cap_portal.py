@@ -1,8 +1,12 @@
 from flask import Flask, request
 from uuid import uuid4
-
+from models import db
+from config import Config
+from flask_migrate import Migrate
 app = Flask(__name__)
-
+app.config.from_object(Config)
+db.init_app(app)
+migrate = Migrate(app, db)
 users = {
     '1': {
         'username': 'eavila',

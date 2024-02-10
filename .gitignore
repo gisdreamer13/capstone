@@ -1,2 +1,4 @@
 cap-venv/
+migrations
 .env
+__pycache__
