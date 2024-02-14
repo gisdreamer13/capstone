@@ -1,10 +1,17 @@
+
 from flask import Flask, request
 from uuid import uuid4
 from models import db
 from config import Config
 from flask_migrate import Migrate
+from flask_cors import CORS
+from werkzeug.security import check_password_hash
+
+from models import User
+
 app = Flask(__name__)
 app.config.from_object(Config)
+CORS(app)
 db.init_app(app)
 migrate = Migrate(app, db)
 users = {
@@ -46,7 +53,10 @@ def user():
 @app.post('/user')
 def create_user():
     json_body = request.get_json()
-    users[uuid4()] = json_body
+    # users[uuid4()] = json_body
+    user = User(json_body['username'],json_body['email'],json_body['password'])
+    user.save_user()
+    # print(json_body)
     return { 'message': f'{json_body["username"]} created'}, 201
 
 @app.put('/user/<user_id>')
@@ -68,6 +78,14 @@ def delete_user(user_id):
     return { 'message': f'User Deleted' }, 202
   except:
     return {'message': "Invalid username"}, 400
+  
+@app.post('/login')
+def login_user():
+  data = request.get_json()
+  user = User.query.filter_by(username = data['username']).first()
+
+  if user and check_password_hash(user.password, data['password']):
+    return{'message': f"{user.username} logged in"}, 201
 
 #anime Routes
 
