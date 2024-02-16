@@ -1,12 +1,12 @@
 
 from flask import Flask, request
 from uuid import uuid4
-from models import db
+from models import db, Anime
+
 from config import Config
 from flask_migrate import Migrate
 from flask_cors import CORS
 from werkzeug.security import check_password_hash
-
 from models import User
 
 app = Flask(__name__)
@@ -14,6 +14,7 @@ app.config.from_object(Config)
 CORS(app)
 db.init_app(app)
 migrate = Migrate(app, db)
+
 users = {
     '1': {
         'username': 'eavila',
@@ -82,16 +83,24 @@ def delete_user(user_id):
 @app.post('/login')
 def login_user():
   data = request.get_json()
+  print(data)
   user = User.query.filter_by(username = data['username']).first()
-
+  print(user)
   if user and check_password_hash(user.password, data['password']):
     return{'message': f"{user.username} logged in"}, 201
+  return {'message': "Invalid login"}, 400
 
 #anime Routes
 
 @app.get('/anime')
 def get_anime():
-  return { 'posts': list(animes.values()) }
+  a_list = Anime.query.all()
+  a_ob = {}
+  for a in a_list:
+    a_ob[a.id] = a.to_dict()
+  print(a_ob)
+
+  return a_ob, 200
 
 @app.post('/anime')
 def create_anime():
