@@ -95,12 +95,14 @@ def login_user():
 @app.get('/anime')
 def get_anime():
   a_list = Anime.query.all()
-  a_ob = {}
+  a_ob = []
   for a in a_list:
-    a_ob[a.id] = a.to_dict()
+    a_ob.append(a.to_dict())
   print(a_ob)
 
-  return a_ob, 200
+  return {
+    'animes': a_ob
+  }, 200
 
 @app.post('/anime')
 def create_anime():
