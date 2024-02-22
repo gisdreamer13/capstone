@@ -87,7 +87,10 @@ def login_user():
   user = User.query.filter_by(username = data['username']).first()
   print(user)
   if user and check_password_hash(user.password, data['password']):
-    return{'message': f"{user.username} logged in"}, 201
+    return {
+      'message': f"{user.username} logged in",
+      'user': user.to_dict()
+      }, 201
   return {'message': "Invalid login"}, 400
 
 #anime Routes
