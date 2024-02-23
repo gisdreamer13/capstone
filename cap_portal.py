@@ -110,10 +110,14 @@ def get_anime():
 @app.post('/anime')
 def create_anime():
   post_data = request.get_json()
-  user_id = post_data['user_id']
-  if user_id in users:
-    animes[uuid4()] = post_data
-    return { 'message': "Anime Created" }, 201
+  print(post_data)
+  # user_id = post_data['user_id']
+  # if user_id in users:
+  #   animes[uuid4()] = post_data
+  #   return { 'message': "Anime Created" }, 201
+  a = Anime(post_data['name'], post_data['img'])
+  a.save_anime()
+  return { 'message': "Anime Created" }, 201
   return { 'message': "Invalid"}, 401
 
 @app.put('/anime/<anime_id>')
