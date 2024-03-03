@@ -120,8 +120,25 @@ def create_anime():
   return { 'message': "Anime Created" }, 201
   return { 'message': "Invalid"}, 401
 
-@app.put('/anime/<anime_id>')
-def update_anime(anime_id):
+@app.put('/anime')
+def update_anime():
+
+  post_data = request.get_json()
+  print(post_data)
+  a = Anime.query.get(int(post_data['id']))
+  if a:
+    a.img = post_data['img']
+    a.name = post_data['name']
+    db.session.commit()
+    return {
+      'message': a.to_dict()
+    }
+  return{
+    'message': 'Invalid'
+  }
+
+
+
   try:
     print(anime_id)
     anime = animes[anime_id]
@@ -134,10 +151,13 @@ def update_anime(anime_id):
   except:
     return {'message': "Invalid Anime Id"}, 400
 
-@app.delete('/anime/<anime_id>')
+@app.delete('/anime')
 def delete_anime(anime_id):
-  try:
-    del animes[anime_id]
+  post_data = request.get_json()
+  print(post_data)
+  a = Anime.query.get(int(post_data['id']))
+  if a:
+    db.session.delete(a)
+    db.session.commit()
     return {"message": "Anime Deleted"}, 202
-  except:
-    return {'message':"Invalid Anime"}, 400
+  return {'message':"Invalid Anime"}, 400
