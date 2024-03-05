@@ -157,6 +157,8 @@ def delete_anime(anime_id):
   print(post_data)
   a = Anime.query.get(int(post_data['id']))
   if a:
+    a.id = post_data['id']
+    a.name = post_data['name']
     db.session.delete(a)
     db.session.commit()
     return {"message": "Anime Deleted"}, 202

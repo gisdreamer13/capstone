@@ -41,7 +41,7 @@ class Anime(db.Model):
     def save_anime(self):
         db.session.add(self)
         db.session.commit()
-
+        
     def to_dict(self):
         return {
             'id': self.id,
