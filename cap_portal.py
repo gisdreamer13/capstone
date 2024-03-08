@@ -151,14 +151,12 @@ def update_anime():
   except:
     return {'message': "Invalid Anime Id"}, 400
 
-@app.delete('/anime')
+@app.delete('/anime/<anime_id>')
 def delete_anime(anime_id):
-  post_data = request.get_json()
-  print(post_data)
-  a = Anime.query.get(int(post_data['id']))
+  # post_data = request.get_json()
+  # print(post_data)
+  a = Anime.query.get(anime_id)
   if a:
-    a.id = post_data['id']
-    a.name = post_data['name']
     db.session.delete(a)
     db.session.commit()
     return {"message": "Anime Deleted"}, 202
