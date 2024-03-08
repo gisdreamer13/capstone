@@ -161,3 +161,14 @@ def delete_anime(anime_id):
     db.session.commit()
     return {"message": "Anime Deleted"}, 202
   return {'message':"Invalid Anime"}, 400
+
+@app.post('/anime/add')
+def add_anime_to_list():
+  post_data = request.get_json()
+  user_id = post_data.get('user_id')
+  anime_id = post_data.get('anime_id')
+  user = User.query.get(user_id)
+  anime = Anime.query.get(anime_id)
+  user.animes.append(anime)
+  db.session.commit()
+  return {'message': f'added {anime.name} to list'}, 201

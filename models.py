@@ -11,6 +11,7 @@ class User(db.Model):
     username = db.Column(db.String(50), nullable=False, unique=True)
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
+    animes = db.relationship('Anime', secondary= 'join', backref= 'users')
 
     def __init__(self,username, email, password):
         self.username = username
@@ -41,10 +42,28 @@ class Anime(db.Model):
     def save_anime(self):
         db.session.add(self)
         db.session.commit()
-        
+
     def to_dict(self):
         return {
             'id': self.id,
             'name': self.name,
             'img' : self.img,
         }
+    
+
+class Join(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) 
+    anime_id = db.Column(db.Integer, db.ForeignKey('anime.id'), nullable=False) 
+
+
+    def __init__(self, user_id, anime_id):
+        self.user_id = user_id
+        self.anime_id = anime_id
+
+    # def save_to_list(self):
+    #     db.session.add(self)
+    #     db.session.commit()
+
+    
+        
